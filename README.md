@@ -10,6 +10,12 @@ This first version uses the node and edge data already embedded in your existing
 - Object property panel
 - Clickable nodes
 - Original geographic positions from the HTML
+- Color-coded CSIP hierarchy with independently selectable layers
+- Node, edge, DER, CSIP, and feeder colors matched to `ieee9500_csip.html`
+- Full-network geographic view plus feeder, CSIP-layer, and edge-type filters
+- Search for both nodes and edges with hop highlighting and supply tracing
+- GLM augmentation for generator objects omitted by the HTML export, including
+  `dg_diesel620`, microturbines, steam generation, and LNG engines
 
 ## Folder setup
 
@@ -48,6 +54,9 @@ When the HTML is in the same folder:
 ```bash
 python app.py
 ```
+
+By default the app also reads `src/535040422/model_base.glm`. Pass a different
+model with `--glm-file`, or disable augmentation with `--glm-file ""`.
 
 Or provide its path:
 
