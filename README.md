@@ -1,38 +1,66 @@
-# Project Title
+# IEEE 9500 Interactive Debugger — Version 1
 
-A brief, one-to-two sentence description of what this project does and why it exists.
+This first version uses the node and edge data already embedded in your existing HTML viewer. It keeps the complete topology in Python/NetworkX and sends only the selected debug subgraph to the browser.
 
-## Contributors
-List of collaborators who helped you in this project
+## Current features
 
-## Short Description
+- Exact object search
+- Configurable neighbor-hop display
+- Shortest connected trace to a node marked with `csip_level = system`
+- Object property panel
+- Clickable nodes
+- Original geographic positions from the HTML
 
-* **Feature 1** - Short description of key capability.
+## Folder setup
 
-## Tech Stack
+Place your original HTML beside `app.py`, or pass its path on the command line:
 
-* **Language:** TypeScript / Python / Go
+```text
+ieee9500_debugger/
+├── app.py
+├── requirements.txt
+├── README.md
+├── assets/
+│   └── style.css
+└── ieee9500_csip.html
+```
 
-## Repository Contents
+## Install
 
-List of folders in your repository with a short description of the contents of each folder
+From the debugger folder:
 
-## Getting Started
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-Follow these steps to set up the project locally.
+On Windows PowerShell, activate with:
 
-### Prerequisites
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
-List any software, tools, or global packages needed:
-* Node.js (v18+) or Python (3.11+)
-* Docker / Docker Compose
-* Package manager (npm / yarn / pnpm)
+## Run
 
-### Installation
+When the HTML is in the same folder:
 
-1. **Clone the repository:**
-   ```bash
-   git clone
-   ```
+```bash
+python app.py
+```
 
-### If I want to work on this project, where should I start from?
+Or provide its path:
+
+```bash
+python app.py /path/to/ieee9500_csip.html
+```
+
+Open the address printed in the terminal, normally:
+
+```text
+http://127.0.0.1:8050
+```
+
+## Important limitation
+
+The source trace currently uses graph connectivity and chooses the shortest path to the nearest object whose `csip_level` is `system`. It does not yet evaluate switch state, electrical direction, phases, or GridLAB-D parent relationships. Those belong in the next diagnostic stage after this interface is verified.

@@ -1,0 +1,20 @@
+* { box-sizing: border-box; }
+html, body, #react-entry-point { height: 100%; margin: 0; }
+body { font-family: "Segoe UI", Arial, sans-serif; background: #0b1020; color: #e6ebff; }
+.page { height: 100vh; display: flex; overflow: hidden; }
+.sidebar { width: 310px; padding: 18px; background: #151b2d; border-right: 1px solid #2b3553; overflow-y: auto; }
+.sidebar h2 { margin: 0 0 4px; font-size: 20px; }
+.sidebar h3 { margin-top: 26px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: #9aa8d6; }
+.sidebar label { display: block; margin: 22px 0 8px; font-size: 12px; color: #9aa8d6; text-transform: uppercase; letter-spacing: .06em; }
+.graph-wrap { flex: 1; height: 100%; background: #090d18; }
+.muted { color: #7886ad; font-size: 12px; }
+.status { margin-top: 20px; padding: 10px; background: #0f1526; border: 1px solid #283451; border-radius: 7px; font-size: 12px; line-height: 1.5; }
+.info-panel { font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.info-panel > div { display: grid; grid-template-columns: 110px 1fr; gap: 8px; padding: 4px 0; border-bottom: 1px solid #242d45; }
+.key { color: #8290bb; }
+.Select-control, .Select-menu-outer { background: #0f1526 !important; border-color: #34415f !important; color: #e6ebff !important; }
+.Select-value-label, .Select-placeholder, .Select-input > input { color: #e6ebff !important; }
+.Select-option { background: #151b2d !important; color: #e6ebff !important; }
+.Select-option.is-focused { background: #293552 !important; }
+.rc-slider-track { background-color: #5c6bc0; }
+.rc-slider-handle { border-color: #9fa8da; }

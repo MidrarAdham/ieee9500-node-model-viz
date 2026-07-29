@@ -1,0 +1,19 @@
+[project]
+name = "ieee9500-viz"
+version = "0.1.0"
+description = "visualizing the ieee9500 node feeder"
+authors = [
+    {name = "MidrarAdham",email = "midrar@pdx.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dash (>=3.0,<4.0)",
+    "dash-cytoscape (>=1.0,<2.0)",
+    "networkx (>=3.2,<4.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
