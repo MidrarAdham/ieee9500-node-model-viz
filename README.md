@@ -14,6 +14,7 @@ This first version uses the node and edge data already embedded in your existing
 - Node, edge, DER, CSIP, and feeder colors matched to `ieee9500_csip.html`
 - Full-network geographic view plus feeder, CSIP-layer, and edge-type filters
 - Search for both nodes and edges with hop highlighting and supply tracing
+- Header toggle for accessible light and dark interface themes
 - GLM augmentation for generator objects omitted by the HTML export, including
   `dg_diesel620`, microturbines, steam generation, and LNG engines
 

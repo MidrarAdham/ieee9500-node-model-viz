@@ -371,6 +371,26 @@ def info_panel(data: dict[str, Any] | None):
     return rows
 
 
+def network_stylesheet(theme: str = "dark") -> list[dict[str, Any]]:
+    """Build the Cytoscape theme while preserving semantic network colors."""
+    is_light = theme == "light"
+    primary_label = "#2b2f3a" if is_light else "#fff9c4"
+    der_label = "#30343f" if is_light else "#e0e0e0"
+    label_border = "#ffffff" if not is_light else "#20242d"
+    der_border = "rgba(0,0,0,0.38)" if is_light else "rgba(255,255,255,0.33)"
+    return [
+        {"selector": "node", "style": {"label": "", "background-color": "data(visual_color)", "width": "data(visual_size)", "height": "data(visual_size)", "border-width": 0, "opacity": 0.9}},
+        {"selector": "node[csip_level = 'system'], node[csip_level = 'substation']", "style": {"label": "data(label)", "font-size": 9, "color": primary_label, "text-valign": "bottom", "text-margin-y": 4, "border-width": 2, "border-color": primary_label}},
+        {"selector": "node[csip_level = 'non_topology']", "style": {"label": "data(der_name)", "font-size": 7, "color": der_label, "text-valign": "top", "text-margin-y": -2, "shape": "diamond", "border-width": 2, "border-color": der_border}},
+        {"selector": "edge", "style": {"line-color": "data(visual_color)", "width": "data(visual_width)", "curve-style": "haystack", "opacity": 0.75}},
+        {"selector": ".trace", "style": {"background-color": "#5c6bc0", "width": 7, "height": 7, "border-width": 1, "border-color": "#9fa8da", "opacity": 1, "z-index": 8}},
+        {"selector": ".searched", "style": {"background-color": "#ffee58", "border-width": 3, "border-color": label_border, "width": 16, "height": 16, "opacity": 1, "z-index": 10}},
+        {"selector": ".source-bus", "style": {"background-color": "#ffa726", "border-width": 2, "border-color": "#ffe0b2", "width": 10, "height": 10, "opacity": 1, "z-index": 9}},
+        {"selector": ".trace-edge", "style": {"line-color": "#4fc3f7", "width": 2.5, "opacity": 1, "z-index": 10}},
+        {"selector": ".searched-edge", "style": {"line-color": "#ffee58", "width": 3, "opacity": 1, "z-index": 11}},
+    ]
+
+
 def create_app(html_path: Path, glm_path: Path | None = None) -> dash.Dash:
     graph, node_by_id, edge_by_pair, source_nodes, added_objects = load_topology(html_path, glm_path)
     node_ids = sorted(node_by_id)
@@ -403,7 +423,8 @@ def create_app(html_path: Path, glm_path: Path | None = None) -> dash.Dash:
     app.title = "IEEE 9500-Node — CSIP Hierarchy Viewer"
 
     app.layout = html.Div(
-        className="page",
+        id="page-shell",
+        className="page theme-dark",
         children=[
             html.Header(
                 className="header",
@@ -414,6 +435,13 @@ def create_app(html_path: Path, glm_path: Path | None = None) -> dash.Dash:
                         f"{len(CSIP_LEVELS)} CSIP levels · {len(segments)} segments · {der_count} DERs"
                         + (f" · {added_objects} recovered from GLM" if added_objects else ""),
                         className="header-stats",
+                    ),
+                    html.Button(
+                        "☀ Light mode",
+                        id="theme-toggle",
+                        className="theme-toggle",
+                        title="Switch to light mode",
+                        **{"aria-label": "Switch to light mode"},
                     ),
                 ],
             ),
@@ -512,17 +540,7 @@ def create_app(html_path: Path, glm_path: Path | None = None) -> dash.Dash:
                         minZoom=0.02,
                         maxZoom=15,
                         style={"width": "100%", "height": "100%"},
-                        stylesheet=[
-                            {"selector": "node", "style": {"label": "", "background-color": "data(visual_color)", "width": "data(visual_size)", "height": "data(visual_size)", "border-width": 0, "opacity": 0.9}},
-                            {"selector": "node[csip_level = 'system'], node[csip_level = 'substation']", "style": {"label": "data(label)", "font-size": 9, "color": "#fff9c4", "text-valign": "bottom", "text-margin-y": 4, "border-width": 2, "border-color": "#fff9c4"}},
-                            {"selector": "node[csip_level = 'non_topology']", "style": {"label": "data(der_name)", "font-size": 7, "color": "#e0e0e0", "text-valign": "top", "text-margin-y": -2, "shape": "diamond", "border-width": 2, "border-color": "rgba(255,255,255,0.33)"}},
-                            {"selector": "edge", "style": {"line-color": "data(visual_color)", "width": "data(visual_width)", "curve-style": "haystack", "opacity": 0.75}},
-                            {"selector": ".trace", "style": {"background-color": "#5c6bc0", "width": 7, "height": 7, "border-width": 1, "border-color": "#9fa8da", "opacity": 1, "z-index": 8}},
-                            {"selector": ".searched", "style": {"background-color": "#ffee58", "border-width": 3, "border-color": "#ffffff", "width": 16, "height": 16, "opacity": 1, "z-index": 10}},
-                            {"selector": ".source-bus", "style": {"background-color": "#ffa726", "border-width": 2, "border-color": "#ffe0b2", "width": 10, "height": 10, "opacity": 1, "z-index": 9}},
-                            {"selector": ".trace-edge", "style": {"line-color": "#4fc3f7", "width": 2.5, "opacity": 1, "z-index": 10}},
-                            {"selector": ".searched-edge", "style": {"line-color": "#ffee58", "width": 3, "opacity": 1, "z-index": 11}},
-                        ],
+                        stylesheet=network_stylesheet("dark"),
                     ),
                     html.Div("🌍 Geographic layout — ~119°W 46.7°N  |  CSIP IEEE 2030.5", className="geo-badge"),
                 ],
@@ -633,6 +651,32 @@ def create_app(html_path: Path, glm_path: Path | None = None) -> dash.Dash:
             [level for level, _, _ in CSIP_LEVELS],
             ["S1", "S2", "S3", "subtrans"],
             edge_types,
+        )
+
+    @app.callback(
+        Output("page-shell", "className"),
+        Output("theme-toggle", "children"),
+        Output("theme-toggle", "title"),
+        Output("theme-toggle", "aria-label"),
+        Output("network", "stylesheet"),
+        Input("theme-toggle", "n_clicks"),
+    )
+    def toggle_theme(n_clicks):
+        is_light = bool((n_clicks or 0) % 2)
+        if is_light:
+            return (
+                "page theme-light",
+                "☾ Dark mode",
+                "Switch to dark mode",
+                "Switch to dark mode",
+                network_stylesheet("light"),
+            )
+        return (
+            "page theme-dark",
+            "☀ Light mode",
+            "Switch to light mode",
+            "Switch to light mode",
+            network_stylesheet("dark"),
         )
 
     return app
